@@ -64,13 +64,33 @@ window.addEventListener('DOMContentLoaded', () => {
     const popUp = document.querySelector('.popup'),
       popupBtn = document.querySelectorAll('.popup-btn'),
       popupClose = document.querySelector('.popup-close');
+
     popupBtn.forEach(item => {
       item.addEventListener('click', () => {
-        popUp.style.display = 'block';
+        let showAnimate;
+        let count = 0;
+        popUp.style.visibility = 'visible';
+        const show = () => {
+          showAnimate = requestAnimationFrame(show);
+          count += 0.02;
+          if (count <= 1) {
+            popUp.style.opacity = count;
+          } else {
+            cancelAnimationFrame(showAnimate);
+          }
+        };
+        if (window.innerWidth < 768) {
+          popUp.style.opacity = 100;
+        } else {
+          showAnimate = requestAnimationFrame(show);
+        }
       });
     });
     popupClose.addEventListener('click', () => {
-      popUp.style.display = 'none';
+      popUp.style.opacity = 0;
+      popUp.style.visibility = 'hidden';
+
+
     });
   };
   tooglePopUp();
