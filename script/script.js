@@ -1,6 +1,37 @@
 window.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line strict
   'use strict';
+
+  // плавный переход по якорным ссылкам
+  const smoothTransition = () => {
+    const links = document.querySelectorAll('[href^="#"]'), //выбираем все ссылки к якорю на странице
+      speed = 0.5;  // скорость, может иметь дробное значение через точку (чем меньше значение - тем больше скорость)
+    links.forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const scrollHeight = window.scrollY,  // пиксели, которые были пролистаны на данный момент от начала
+          hash = this.href.replace(/[^#]*(.*)/, '$1'), // к id элемента, к которому нужно перейти
+          idY = document.querySelector(hash).getBoundingClientRect().top;  // отступ от окна браузера до id
+        let start = null;
+        const scrollAnimation = time => {
+          if (!start) { start = time; }
+          const progress = time - start,
+            r = (idY < 0 ?
+              Math.max(scrollHeight - progress / speed, scrollHeight + idY) :
+              Math.min(scrollHeight + progress / speed, scrollHeight + idY));
+          window.scrollTo(0, r);
+          if (r !== scrollHeight + idY) {
+            requestAnimationFrame(scrollAnimation);
+          } else {
+            cancelAnimationFrame(scrollAnimation);  // URL с хэшем
+          }
+        };
+        requestAnimationFrame(scrollAnimation);
+      });
+    });
+  };
+  smoothTransition();
+
   // таймер
   const countTimer = deadline => {
     const timerhours = document.querySelector('#timer-hours'),
