@@ -93,8 +93,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // поп-ап
   const tooglePopUp = () => {
     const popUp = document.querySelector('.popup'),
-      popupBtn = document.querySelectorAll('.popup-btn'),
-      popupClose = document.querySelector('.popup-close');
+      popupBtn = document.querySelectorAll('.popup-btn');
 
     popupBtn.forEach(item => {
       item.addEventListener('click', () => {
@@ -117,15 +116,51 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       });
     });
-    popupClose.addEventListener('click', () => {
-      popUp.style.opacity = 0;
-      popUp.style.visibility = 'hidden';
 
-
+    popUp.addEventListener('click', event => {
+      let target = event.target;
+      if (target.classList.contains('popup-close')) {
+        popUp.style.opacity = 0;
+        popUp.style.visibility = 'hidden';
+      } else {
+        target = target.closest('.popup-content');
+        if (!target) {
+          popUp.style.opacity = 0;
+          popUp.style.visibility = 'hidden';
+        }
+      }
     });
   };
   tooglePopUp();
 
-
+  // табы
+  const tabs = () => {
+    const tabHeader = document.querySelector('.service-header'),
+      tab = tabHeader.querySelectorAll('.service-header-tab'),
+      tabContent = document.querySelectorAll('.service-tab');
+    const toogleTabContent = index => {
+      for (let i = 0; i < tabContent.length; i++) {
+        if (index === i) {
+          tab[i].classList.add('active');
+          tabContent[i].classList.remove('d-none');
+        } else {
+          tab[i].classList.remove('active');
+          tabContent[i].classList.add('d-none');
+        }
+      }
+    };
+    tabHeader.addEventListener('click', event => {
+      let target = event.target;
+      target = target.closest('.service-header-tab');
+      if (target) {
+        tab.forEach((item, i) => {
+          if (item === target) {
+            toogleTabContent(i);
+          }
+        });
+      }
+    });
+  };
+  tabs();
 
 });
