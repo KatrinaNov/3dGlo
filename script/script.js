@@ -273,4 +273,15 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   };
   changePhoto();
+
+  // калькулятор
+  const checkNumber = () => {
+    const calcInput = document.querySelectorAll('.calc-item[type=text]');
+    calcInput.forEach(item => {
+      item.addEventListener('input', () => {
+        item.value = item.value.replace(/\D/g, '');
+      });
+    });
+  };
+  checkNumber();
 });
