@@ -308,9 +308,23 @@ window.addEventListener('DOMContentLoaded', () => {
       if (typeValue && squareValue) {
         total = price * typeValue * squareValue * countValue * dayValue;
       }
-      totalValue.textContent = total;
+      // перебор чисел (эффект для итоговой суммы)
+      const numberAnimate = () => {
+        let currentValue = +totalValue.textContent;
+        const newValue = Math.floor(total);
+        if (currentValue < newValue) {
+          currentValue += 10;
+        } else if (currentValue > newValue) {
+          currentValue -= 10;
+        } else {
+          clearInterval(countNumber);
+        }
+        totalValue.textContent = currentValue;
+      };
+      const countNumber = setInterval(numberAnimate, 1);
+      numberAnimate();
     };
-    calcBlock.addEventListener('input', event => {
+    calcBlock.addEventListener('change', event => {
       const target = event.target;
 
       if (target.matches('select') || target.matches('input')) {
