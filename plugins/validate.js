@@ -129,6 +129,7 @@ const valid1 = new Validator({
   }
 });
 valid1.init();
+ 
 const valid2 = new Validator({
   selector: '#form2',
   pattern: {
@@ -155,6 +156,7 @@ const valid2 = new Validator({
   }
 });
 valid2.init();
+
 const valid3 = new Validator({
   selector: '#form3',
   pattern: {

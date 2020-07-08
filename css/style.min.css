@@ -327,6 +327,7 @@ main a {
 }
 .input-wrap {
   position: relative;
+  display: inline-block;
 }
 .service {
   background-color: #f2f8f9;
@@ -790,7 +791,9 @@ footer .web {
   margin-right: 0;
   margin-top: 1.5rem
 }
-
+.input-wrap-popup{
+  position: relative;
+}
 .popup h3 {
   color: #fff
 }
@@ -912,7 +915,9 @@ footer .web {
     -webkit-transform: translateY(0);
     transform: translateY(0)
   }
-
+  .input-wrap .validator-error{
+    bottom: -2px;
+  }
   .service-inner {
     padding: 0
   }
