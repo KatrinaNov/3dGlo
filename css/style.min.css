@@ -300,13 +300,14 @@ main .timer-numbers {
 }
 
 main .main-form-input {
+  position: relative;
   display: inline-block;
   width: 96rem;
   height: 8rem;
   border: 1px solid #fefefe
 }
 
-main .main-form-input input {
+main .main-form-input .input-wrap {
   -webkit-transform: translateY(-3rem);
   transform: translateY(-3rem)
 }
@@ -324,7 +325,9 @@ main a {
   -webkit-transition: 1s;
   transition: 1s
 }
-
+.input-wrap {
+  position: relative;
+}
 .service {
   background-color: #f2f8f9;
   padding: 5rem
@@ -780,6 +783,7 @@ footer .web {
 }
 
 .popup .main-form input {
+  position: relative;
   display: block;
   left: 0;
   width: 100%;
