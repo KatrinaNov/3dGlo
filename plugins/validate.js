@@ -3,7 +3,8 @@ class Validator {
     this.form = document.querySelector(selector);
     this.pattern = pattern;
     this.method = method;
-    this.elementsForm = [...this.form.elements].filter(item => item.tagName.toLowerCase() !== 'button' && item.type !== 'button');
+    this.elementsForm = [...this.form.elements]
+      .filter(item => item.tagName.toLowerCase() !== 'button' && item.type !== 'button');
     this.error = new Set();
   }
 
@@ -129,7 +130,7 @@ const valid1 = new Validator({
   }
 });
 valid1.init();
- 
+
 const valid2 = new Validator({
   selector: '#form2',
   pattern: {
