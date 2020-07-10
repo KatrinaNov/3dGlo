@@ -338,14 +338,38 @@ window.addEventListener('DOMContentLoaded', () => {
   // send-ajax-form
   const sendForm = () => {
     const errorMessage = 'Что-то пошло не так...',
-      loadMessage = 'Загрузка...',
-      successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+      successMessage = 'Спасибо за заявку! Мы скоро с вами свяжемся!';
 
-    const form1 = document.getElementById('form1');
-    const form2 = document.getElementById('form2');
-    const form3 = document.getElementById('form3');
-    const statusMessage = document.createElement('div');
-    statusMessage.textContent = loadMessage;
+    const form1 = document.getElementById('form1'),
+      form2 = document.getElementById('form2'),
+      form3 = document.getElementById('form3'),
+      answerPopup = document.querySelector('.answer'),
+      answerContent = answerPopup.querySelector('.answer-content'),
+      loader = answerPopup.querySelector('.loader'),
+      popup = document.querySelector('.popup');
+
+    // модальное окно с благодарностью
+    const answerHandler = (form, message) => {
+      answerPopup.addEventListener('click', e => {
+        if (e.target.classList.contains('answer-close')) {
+          answerPopup.classList.remove('active');
+        } else {
+          const target = e.target.closest('.answer-content');
+          if (!target) {
+            answerPopup.classList.remove('active');
+          }
+        }
+      });
+      // скрываем попап, если он есть
+      popup.style.opacity = 0;
+      popup.style.visibility = 'hidden';
+      // убираем прелоадер, появляется модалка с текстом
+      loader.style.display = 'none';
+      answerContent.style.display = 'block';
+      answerPopup.querySelector('.answer-text').textContent = message;
+      // очищаем форму
+      form.reset();
+    };
 
     const postData = (body, outputData, errorData) => {
       const request = new XMLHttpRequest();
@@ -369,18 +393,21 @@ window.addEventListener('DOMContentLoaded', () => {
     function formListener(form) {
       form.addEventListener('submit', event => {
         event.preventDefault();
-        form.append(statusMessage);
-
+        // запускается прелоадер
+        answerPopup.classList.add('active');
+        loader.style.display = 'flex';
+        answerContent.style.display = 'none';
+        // создаем объект с данными формы
         const formData = new FormData(form);
         const body = {};
         formData.forEach((val, key) => {
           body[key] = val;
         });
         postData(body, () => {
-          statusMessage.textContent = successMessage;
+          answerHandler(form, successMessage);
         },
         error => {
-          statusMessage.textContent = errorMessage;
+          answerHandler(form, errorMessage);
           console.log(error);
         });
       });
