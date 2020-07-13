@@ -371,7 +371,7 @@ window.addEventListener('DOMContentLoaded', () => {
       form.reset();
     };
 
-    const postData = (body, outputData, errorData) => {
+    const postData = body => new Promise((resolve, reject) => {
       const request = new XMLHttpRequest();
 
       request.addEventListener('readystatechange', () => {
@@ -379,16 +379,16 @@ window.addEventListener('DOMContentLoaded', () => {
           return;
         }
         if (request.status === 200) {
-          outputData();
+          resolve();
         } else {
-          errorData(request.status);
+          reject(request.status);
         }
       });
 
       request.open('POST', '../server.php');
       request.setRequestHeader('Content-Type', 'application/json');
       request.send(JSON.stringify(body));
-    };
+    });
     // проверка текстовых инпутов, можно вводить только русские буквы и пробелы
     const chechInput = () => {
       document.body.addEventListener('input', e => {
@@ -414,13 +414,14 @@ window.addEventListener('DOMContentLoaded', () => {
         formData.forEach((val, key) => {
           body[key] = val;
         });
-        postData(body, () => {
-          answerHandler(form, successMessage);
-        },
-        error => {
-          answerHandler(form, errorMessage);
-          console.log(error);
-        });
+        postData(body)
+          .then(() => {
+            answerHandler(form, successMessage);
+          })
+          .catch(error => {
+            answerHandler(form, errorMessage);
+            console.log(error);
+          });
       });
     };
     // отправка для трех форм
@@ -435,23 +436,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function mask(event) {
       const keyCode = event.keyCode;
+      const target = event.target;
       const template = masked,
         def = template.replace(/\D/g, ""),
-        val = this.value.replace(/\D/g, "");
+        val = target.value.replace(/\D/g, "");
       let i = 0,
         newValue = template.replace(/[_\d]/g, a => (i < val.length ? val.charAt(i++) || def.charAt(i) : a));
       i = newValue.indexOf("_");
       if (i !== -1) {
         newValue = newValue.slice(0, i);
       }
-      let reg = template.substr(0, this.value.length).replace(/_+/g,
+      let reg = template.substr(0, target.value.length).replace(/_+/g,
         a => "\\d{1," + a.length + "}").replace(/[+()]/g, "\\$&");
       reg = new RegExp("^" + reg + "$");
-      if (!reg.test(this.value) || this.value.length < 5 || keyCode > 47 && keyCode < 58) {
-        this.value = newValue;
+      if (!reg.test(target.value) || target.value.length < 5 || keyCode > 47 && keyCode < 58) {
+        target.value = newValue;
       }
-      if (event.type === "blur" && this.value.length < 5) {
-        this.value = "";
+      if (event.type === "blur" && target.value.length < 5) {
+        target.value = "";
       }
 
     }
