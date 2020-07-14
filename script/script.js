@@ -308,23 +308,35 @@ window.addEventListener('DOMContentLoaded', () => {
       if (typeValue && squareValue) {
         total = price * typeValue * squareValue * countValue * dayValue;
       }
-      // перебор чисел (эффект для итоговой суммы)
-      const numberAnimate = () => {
-        let currentValue = +totalValue.textContent;
-        const newValue = Math.floor(total);
-        if (currentValue < newValue) {
-          currentValue += 10;
-        } else if (currentValue > newValue) {
-          currentValue -= 10;
-        } else {
-          clearInterval(countNumber);
-        }
-        totalValue.textContent = currentValue;
+
+      const currentValue = +totalValue.textContent;
+      const newValue = Math.floor(total);
+      // эффект перебора цифр в итоговой сумме
+      const animate = ({ timing, draw, duration }) => {
+        const start = performance.now();
+        requestAnimationFrame(function animate(time) {
+          // timeFraction изменяется от 0 до 1
+          let timeFraction = (time - start) / duration;
+          if (timeFraction > 1) timeFraction = 1;
+          // вычисление текущего состояния анимации
+          const progress = timing(timeFraction);
+          draw(progress); // отрисовать её
+          if (timeFraction < 1) {
+            requestAnimationFrame(animate);
+          }
+        });
       };
-      const countNumber = setInterval(numberAnimate, 1);
-      numberAnimate();
+      animate({
+        duration: 500,
+        timing(timeFraction) {
+          return timeFraction;
+        },
+        draw(progress) {
+          totalValue.textContent = currentValue + Math.ceil((newValue - currentValue) * progress);
+        }
+      });
     };
-    calcBlock.addEventListener('change', event => {
+    calcBlock.addEventListener('input', event => {
       const target = event.target;
 
       if (target.matches('select') || target.matches('input')) {
