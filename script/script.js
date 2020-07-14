@@ -335,7 +335,7 @@ window.addEventListener('DOMContentLoaded', () => {
   };
   calc(100);
 
-  // send-ajax-form
+  // send-fetch-form
   const sendForm = () => {
     const errorMessage = 'Что-то пошло не так...',
       successMessage = 'Спасибо за заявку! Мы скоро с вами свяжемся!';
@@ -371,24 +371,14 @@ window.addEventListener('DOMContentLoaded', () => {
       form.reset();
     };
 
-    const postData = body => new Promise((resolve, reject) => {
-      const request = new XMLHttpRequest();
-
-      request.addEventListener('readystatechange', () => {
-        if (request.readyState !== 4) {
-          return;
-        }
-        if (request.status === 200) {
-          resolve();
-        } else {
-          reject(request.status);
-        }
-      });
-
-      request.open('POST', '../server.php');
-      request.setRequestHeader('Content-Type', 'application/json');
-      request.send(JSON.stringify(body));
+    const postData = body => fetch('./server.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
     });
+
     // проверка текстовых инпутов, можно вводить только русские буквы и пробелы
     const chechInput = () => {
       document.body.addEventListener('input', e => {
@@ -415,7 +405,10 @@ window.addEventListener('DOMContentLoaded', () => {
           body[key] = val;
         });
         postData(body)
-          .then(() => {
+          .then(response => {
+            if (response.status !== 200) {
+              throw new Error('status network not 200');
+            }
             answerHandler(form, successMessage);
           })
           .catch(error => {
