@@ -9,7 +9,6 @@ const sendForm = () => {
     answerContent = answerPopup.querySelector('.answer-content'),
     loader = answerPopup.querySelector('.loader'),
     popup = document.querySelector('.popup');
-
   // модальное окно с благодарностью
   const answerHandler = (form, message) => {
     answerPopup.addEventListener('click', e => {
@@ -52,10 +51,21 @@ const sendForm = () => {
     });
   };
   chechInput();
+  // проверка телефона
+  const checkPhone = item => {
+    const patternPhone = /^\+?[78]\s?([-()]*\s?\d){10}$/;
+    return patternPhone.test(item);
+  };
 
   const formListener = form => {
     form.addEventListener('submit', event => {
       event.preventDefault();
+      const phone = event.target.querySelector('[type=tel]');
+      if (!checkPhone(phone.value)) {
+        phone.style.border = "1px solid red";
+        return;
+      }
+      phone.style.border = "";
       // запускается прелоадер
       answerPopup.classList.add('active');
       loader.style.display = 'flex';
